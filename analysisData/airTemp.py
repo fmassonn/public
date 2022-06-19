@@ -55,7 +55,7 @@ TMax2022 = (35.9 + 36.1)  / 2
 fig, ax = plt.subplots(1, 2, figsize = (8, 4))
 
 
-xpdf = np.linspace(5.0, 40.0)
+xpdf = np.linspace(5.0, 43.0)
 kernel_1 = stats.gaussian_kde(subSetTMax_1)
 fit_1 = kernel_1(xpdf).T
 kernel_2 = stats.gaussian_kde(subSetTMax_2)
@@ -73,7 +73,7 @@ for a in ax:
                              + "-" + str(yearSeparation) + " (n = " + str(n_1) +")", alpha = 1, \
                                  bins =  np.arange(10, 40, 1), density = True)    
     a.hist(subSetTMax_2, color = "#D81F2A", label = str(yearSeparation + 1) + \
-        "-" + str(dates[-1].year) + " (n = " + str(n_2) +")", alpha = 0.5, \
+        "-" + str(dates[-1].year - 1) + " (n = " + str(n_2) +")", alpha = 0.5, \
             bins =  np.arange(10, 40, 1), density = True)
     
     
@@ -88,7 +88,30 @@ ax[0].set_title("Toutes les données")
 ax[1].set_title("Zoom > 30$^\circ$ C")
 ax[0].set_ylim(0.0, 0.15) 
 ax[1].set_ylim(0.0, 0.03) 
-ax[1].set_xlim(30.0, 40.0)
+a.set_xlim(30.0, 40.0)
+
 fig.tight_layout()
 
 plt.savefig("./fig1.png", dpi = 300)
+
+fig, ax = plt.subplots(1, 1, dpi = 300)
+distHist = np.array([TMax[j] for j, d in enumerate(dates) if d.month == 6 and d.day <= 18])
+ax.hist(distHist, color = "black", label = str(dates[0].year) + "-" + \
+        str(dates[-1].year - 1) + " (n = " + str(len(distHist)) +")", \
+            bins =  np.arange(10, 40, 1), density = True)
+ax.set_ylim(0.0, 0.15) 
+    
+ax.plot((TMax2022, TMax2022), (0, 10000), color = "orange", zorder = 1000, \
+              label = "18 Juin 2022 (estim.)", linestyle = "--")
+ax.set_title("Distribution des températures maximales\njournalières du 1 au 18 juin à Orly (France)")
+ax.set_ylabel("Densité de probabilité")
+ax.set_xlabel("$^\circ$C")
+
+ax.legend()
+
+fig.tight_layout()
+
+plt.savefig("./fig2.png", dpi = 300)
+
+
+
